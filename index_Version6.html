@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LMB ITS - Direktori UKM</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;700&display=swap">
+  <style>
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      margin: 0;
+      background: #f8f9fa;
+      color: #222;
+    }
+    /* --- HERO SECTION --- */
+    .hero {
+      background: radial-gradient(ellipse at center, #a7556a 0%, #7d3e4e 100%);
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      padding: 60px 0 36px 0;
+      position: relative;
+    }
+    .hero-title { font-family: 'Montserrat', Arial, sans-serif; font-size: 3rem; font-weight: 800; margin-bottom: 10px; }
+    .hero-desc { font-size: 1.2rem; margin-bottom: 6px; }
+    .hero-inst { opacity: 0.8; font-size: 1rem; margin-bottom: 34px;}
+    .hero-stats {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 28px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .stat-box {
+      background: rgba(255,255,255,0.13);
+      border-radius: 24px;
+      padding: 24px 48px;
+      min-width: 170px;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 20px #0001;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .stat-box small { font-size: 1rem; font-weight: 400; margin-top: 6px; color: #f9f9f9;}
+    .hero-filters {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      margin-bottom: 0;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      border: none;
+      outline: none;
+      padding: 10px 25px;
+      border-radius: 20px;
+      font-size: 1.05rem;
+      margin-bottom: 7px;
+      background: rgba(255,255,255,0.17);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.16s, color 0.16s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: #fff;
+      color: #7d3e4e;
+    }
+
+    /* --- SEARCH + FILTER --- */
+    .section {
+      max-width: 1200px;
+      margin: -60px auto 0 auto;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 4px 24px #0001;
+      padding: 36px 24px 30px 24px;
+      min-height: 70vh;
+      position: relative;
+      z-index: 2;
+    }
+    .breadcrumbs {
+      color:#a7556a;font-size:1.04rem;margin-bottom:12px;
+    }
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+    .search-input {
+      width: 100%;
+      max-width: 460px;
+      padding: 15px 22px;
+      border-radius: 16px;
+      border: 1.5px solid #e0e0e0;
+      font-size: 1rem;
+      outline: none;
+      box-shadow: 0 1.5px 8px #0000000a;
+      margin-bottom: 10px;
+      transition: border 0.13s;
+    }
+    .search-input:focus { border-color: #a7556a; }
+
+    .category-filters {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .cat-btn {
+      border: none;
+      outline: none;
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-size: 1.05rem;
+      margin-bottom: 7px;
+      background: #f1e4ea;
+      color: #7d3e4e;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.16s, color 0.16s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .cat-btn.active, .cat-btn:hover {
+      background: #a7556a;
+      color: #fff;
+    }
+
+    /* --- CARD UKM --- */
+    .ukm-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .ukm-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px #0001;
+      padding: 24px 22px 18px 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      position: relative;
+      min-height: 230px;
+      transition: box-shadow 0.14s;
+    }
+    .ukm-card:hover { box-shadow: 0 6px 26px #0002;}
+    .ukm-logo {
+      width: 55px; height: 55px; object-fit: contain; border-radius: 50%; background: #fff; border: 2px solid #f2e3ea;
+      margin-bottom: 10px;
+    }
+    .ukm-title {
+      font-size: 1.19rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #7d3e4e;
+    }
+    .ukm-bidang {
+      background: #a7556a;
+      color: #fff;
+      border-radius: 12px;
+      font-size: 0.98rem;
+      padding: 3px 18px;
+      margin-bottom: 14px;
+      display: inline-block;
+    }
+    .ukm-desc {
+      font-size: 1.02rem;
+      color: #333;
+      margin-bottom: 24px;
+      min-height: 56px;
+      max-height: 56px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+    .ukm-detail-btn {
+      align-self: flex-end;
+      background: #7d3e4e;
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 9px 23px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: auto;
+      transition: background 0.13s;
+    }
+    .ukm-detail-btn:hover { background: #a7556a; }
+
+    .ukm-card-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 17px;
+      width: 100%;
+      justify-content: space-between;
+      font-size: 0.98rem;
+      color: #a7556a;
+    }
+    .ukm-card-footer .ukm-instagram {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .ukm-card-footer .ukm-status {
+      color: #18ba60;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
+    }
+    .ukm-card-footer .ukm-status::before {
+      content: '';
+      display: inline-block;
+      width: 8px; height: 8px; border-radius: 50%; background: #18ba60;
+    }
+
+    /* --- MODAL --- */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.44);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadein-bg 0.2s;
+    }
+    @keyframes fadein-bg { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      background: #fff;
+      border-radius: 13px;
+      box-shadow: 0 4px 30px #00336644;
+      min-width: 300px;
+      max-width: 96vw;
+      width: 370px;
+      padding: 30px 24px 18px 24px;
+      position: relative;
+      animation: fadein-modal 0.2s;
+    }
+    @keyframes fadein-modal { from { transform: translateY(30px); opacity: 0;} to {transform: none; opacity: 1;} }
+    .modal img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background: #fff;
+      border: 1px solid #eee;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal h3 {
+      margin: 6px 0 2px 0;
+      font-size: 1.24rem;
+      text-align: center;
+      color: #7d3e4e;
+    }
+    .modal .ukm-bidang {
+      text-align: center;
+      color: #fff;
+      background: #a7556a;
+      display: inline-block;
+      font-size: 1rem;
+      border-radius: 9px;
+      margin-bottom: 10px;
+      padding: 3px 16px;
+    }
+    .modal .ukm-deskripsi {
+      margin: 13px 0 15px 0;
+      font-size: 1.02rem;
+      color: #222;
+      text-align: justify;
+      min-height: 48px;
+    }
+    .modal .ukm-instagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin: 0 0 14px 0;
+      font-size: 1.04rem;
+      color: #a7556a;
+    }
+    .modal .ukm-instagram a {
+      background: #E4405F;
+      color: #fff;
+      padding: 7px 13px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.1s;
+    }
+    .modal .ukm-instagram a:hover {
+      background: #a52d41;
+    }
+    .modal .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: #eee;
+      border: none;
+      border-radius: 50%;
+      width: 27px;
+      height: 27px;
+      font-weight: bold;
+      font-size: 1.35rem;
+      color: #a7556a;
+      cursor: pointer;
+      transition: background 0.1s;
+      z-index: 10;
+    }
+    .modal .close-btn:hover {
+      background: #d4e3f3;
+      color: #7d3e4e;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      background: #232d36;
+      color: #fff;
+      padding: 40px 0 20px 0;
+      margin-top: 55px;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 60px;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .footer-col { flex: 1 1 220px; min-width: 180px;}
+    .footer-title {font-size: 1.17rem; font-weight: 700; margin-bottom: 10px;}
+    .footer-list { list-style: none; padding: 0; color: #d3d3d3;}
+    .footer-list li { margin-bottom: 8px;}
+    .footer-contact .icon {margin-right: 7px;}
+    .footer-socmed { margin-top: 16px; display: flex; gap: 14px; }
+    .footer-socmed a { color: #fff; font-size: 1.1rem; opacity: 0.85; transition: opacity 0.16s;}
+    .footer-socmed a:hover { opacity: 1; }
+    .footer-bottom {text-align:center; margin-top:30px; color:#d3d3d3; font-size:0.93rem;}
+    @media (max-width: 900px) {
+      .footer-container {flex-direction:column; gap:25px;}
+    }
+    @media (max-width: 600px) {
+      .hero-title { font-size: 2.1rem;}
+      .section {padding:18px 4vw 12px 4vw;}
+      .ukm-cards {grid-template-columns:1fr;}
+      .footer-container {padding:0 8px;}
+    }
+  </style>
+</head>
+<body>
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-title">LMB ITS</div>
+    <div class="hero-desc">Lembaga Minat Bakat</div>
+    <div class="hero-inst">Institut Teknologi Sepuluh Nopember</div>
+    <div class="hero-stats">
+      <div class="stat-box">
+        44<br><small>UKM</small>
+      </div>
+      <div class="stat-box">
+        100+<br><small>Prestasi</small>
+      </div>
+    </div>
+    <div class="hero-filters">
+      <button class="filter-btn active" data-filter="all"><span>⭐</span> Semua UKM</button>
+      <button class="filter-btn" data-filter="Bela Diri"><span>🥋</span> Bela Diri</button>
+      <button class="filter-btn" data-filter="Olahraga"><span>⚽</span> Olahraga</button>
+      <button class="filter-btn" data-filter="Seni"><span>🎨</span> Seni</button>
+      <button class="filter-btn" data-filter="Khusus"><span>🔬</span> Khusus</button>
+    </div>
+  </section>
+
+  <!-- SEARCH & CARD SECTION -->
+  <section class="section">
+    <div class="breadcrumbs">
+      <span>Beranda</span> &gt; <span>Direktori UKM</span>
+    </div>
+    <div class="search-bar">
+      <input type="text" class="search-input" id="searchInput" placeholder="Cari UKM berdasarkan nama, kategori, atau deskripsi..." />
+    </div>
+    <div class="category-filters" id="categoryFilters">
+      <button class="cat-btn active" data-cat="all">Semua UKM</button>
+      <button class="cat-btn" data-cat="Bela Diri">Bela Diri</button>
+      <button class="cat-btn" data-cat="Olahraga">Olahraga</button>
+      <button class="cat-btn" data-cat="Seni">Seni</button>
+      <button class="cat-btn" data-cat="Khusus">Khusus</button>
+    </div>
+    <div class="ukm-cards" id="ukmCards"></div>
+  </section>
+
+  <!-- MODAL DETAIL UKM -->
+  <div id="modal-root"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="footer-title">LMB ITS</div>
+        <div style="margin-bottom:16px;">Lembaga Minat Bakat Institut Teknologi Sepuluh Nopember mengembangkan potensi mahasiswa melalui berbagai unit kegiatan yang beragam dan berkualitas.</div>
+        <div class="footer-socmed">
+          <a href="#" title="Instagram"><img src="https://img.icons8.com/ios-filled/22/ffffff/instagram-new.png"/></a>
+          <a href="#" title="Tiktok"><img src="https://img.icons8.com/ios-filled/22/ffffff/tiktok--v1.png"/></a>
+          <a href="#" title="YouTube"><img src="https://img.icons8.com/ios-filled/22/ffffff/youtube-play.png"/></a>
+          <a href="#" title="Website"><img src="https://img.icons8.com/ios-filled/22/ffffff/domain.png"/></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <div class="footer-title">Tautan Cepat</div>
+        <ul class="footer-list">
+          <li>Tentang LMB</li>
+          <li>Direktori UKM</li>
+          <li>Prestasi</li>
+          <li>Berita & Event</li>
+          <li>Kontak</li>
+        </ul>
+      </div>
+      <div class="footer-col footer-contact">
+        <div class="footer-title">Kontak</div>
+        <div><span class="icon">📍</span>Institut Teknologi Sepuluh Nopember<br>Surabaya, Jawa Timur</div>
+        <div style="margin:10px 0 5px 0;"><span class="icon">✉️</span> sankalpavikasana@gmail.com</div>
+        <div><span class="icon">📸</span> @lmb_its</div>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2024 LMB ITS. Hak Cipta Dilindungi. | Kebijakan Privasi | Syarat & Ketentuan</div>
+  </footer>
+
+  <script>
+    // ==== DATA UKM ====
+    const UKM_DATA = [
+      // PASTE seluruh data UKM-mu di sini dari format_data_ukm (1).json (array of objects)
+      {"No":1,"Nama UKM":"Karate-Do","Bidang":"Bela Diri","Deskripsi":"UKM Karate-Do ITS merupakan unit kegiatan mahasiswa yang bergerak di bidang bela diri dan telah berdiri sejak tahun 1973. Karate sendiri merupakan sebuah beladiri dengan tangan kosong yang berasal dari Jepang.","Direct Link Logo":"https://lh3.googleusercontent.com/d/14vf3xOSesZ40RnKYOOeuVa_93WYF0QVD","Link Instagram":"instagram.com/ukmkaratedoits"},
+      {"No":2,"Nama UKM":"Shorinji Kempo","Bidang":"Bela Diri","Deskripsi":"UKM Shorinji Kempo ITS merupakan UKM yang menggeluti Kempo. Beladiri ini berasal dari Jepang yang metode latihan sesuai filosofi ``jiwa dan tubuh adalah sebuah kesatuan yang tak terpisahkan“ (shinshin ichinyo) dan ``melatih tubuh dan jiwa`` (kenzen ichinyo). Dengan demikian Kempo mempunyai tiga manfaat: ``pelatihan dan pertahanan diri“ (goshin rentan), ``pelatihan mental`` (seishin shuyo) dan ``meningkatkan kesehatan“ (kenko zoshin).","Direct Link Logo":"https://lh3.googleusercontent.com/d/1FZ2HwKJYyFKILAnto3Z8vfJR_hmsgwWO","Link Instagram":"instagram.com/shorinjikempoits"},
+      {"No":3,"Nama UKM":"Kendo","Bidang":"Bela Diri","Deskripsi":"Kendo merupakan seni beladiri Jepang yang menggunakan pedang bambu dan pelindung tubuh. Di negara asalnya, Jepang, Kendo menjadi pilihan pelajaran wajib di tingkat SMP.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1tnLQ6VWmNq7EgPihG2QLCcCvOk_haHO9","Link Instagram":"instagram.com/kendoits"},
+      {"No":4,"Nama UKM":"Merpati Putih (MP)","Bidang":"Bela Diri","Deskripsi":"UKM Merpati Putih ITS merupakan suatu wadah penyaluran minat bakat Mahasiswa dalam bidang bela diri. UKM Merpati Putih sendiri singkatan dalam bahasa jawa, yaitu ``Mersudi Patitising Tindak Pusakane Hening`` atau yang dalam bahasa indonesia berarti ``Mencari sampai mendapat Kebenaran dengan Ketenangan``. Sehingga diharapkan, anggota Merpati Putih akan menyelaraskan hati dan pikiran dalam setiap tindakannya. Hal yang membedakan Merpati Putih dengan Beladiri yang lainnya adalah Teknik Olah Nafas dan Tenaga Dalam.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1Bi-4UeHuHNhHp1eHqAtuW0e3gIKI1lVm","Link Instagram":"instagram.com/merpati_putih_its"},
+      {"No":5,"Nama UKM":"Muay Thai","Bidang":"Bela Diri","Deskripsi":"IMA memiliki fokus untuk melatih dan mengajarkan seni beladiri Muay Thai yang berasal dari Thailand. IMA juga merupakan fasilitator bagi anggotanya yang ingin mendalami kegiatannya sekaligus mengikuti kompetisi kejuaraan.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1tPW6BFWiCzTcpVh5OHYBoRiVM_AnAmOf","Link Instagram":"instagram.com/itsmuaythai"},
+      {"No":6,"Nama UKM":"Perisai Diri (PD)","Bidang":"Bela Diri","Deskripsi":"Perisai Diri Unit ITS mengajarkan pesilat mengenai teknik bela diri yang efektif dan efisien, baik tangan kosong maupun dengan senjata. Metode praktis dalam Perisai Diri adalah latihan serang hindar yang menghasilkan motto “Pandai Silat Tanpa Cidera”.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1Bh_ODsS3uu7Kyw_U0fORl6lrEUVnKMAx","Link Instagram":"instagram.com/perisaidiri_its"},
+      {"No":7,"Nama UKM":"PSHT","Bidang":"Bela Diri","Deskripsi":"PSHT merupakan suatu persaudaraan ``perguruan`` silat yang bertujukan membentuk manusia berbudi luhur, mengetahui benar dan salah bertakwa pada Tuhan Yang Maha Esa dan mengajarkan kesetiaan pada hati sanubari serta mengutamakan persaudaraan antar anggota. UKM satu ini juga tidak kalah dalam mencetak prestasi.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1ekmHDpOgCwhnf2zJpfVK4NSYleP-rSmm","Link Instagram":"instagram.com/psht_its"},
+      {"No":8,"Nama UKM":"Taekwondo","Bidang":"Bela Diri","Deskripsi":"UKM Taekwondo ITS merupakan organisasi yang menaungi mahasiswa ITS dalam bidang beladiri taekwondo. UKM Taekwondo ITS telah berdiri sejak tahun 1999. Melalui UKM Taekwondo ITS, kalian akan mendapatkan pengembangan skills tidak hanya dalam ranah keatletan, tetapi juga dalam hal manajerial organisasi.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1uYBGjEoZfjQg__bRD6MZFUxZmLDnFqeN","Link Instagram":"instagram.com/taekwondo_its"},
+      {"No":9,"Nama UKM":"IBC (Badminton)","Bidang":"Olahraga","Deskripsi":"Badminton merupakan salah satu olahraga kejayaan Indonesia. Jika kamu suka berlarian mengejar bulu tangkis dan bergerak aktif, UKM ini adalah tempat yang sesuai untuk kamu. Latih badanmu dan temukan orang dengan hobi sama disini, dan temukan rumah keduamu di ITS.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1XeOlD3WX-D0UHH8XZYJ-o0xQRrG07IGE","Link Instagram":"instagram.com/ukm_badminton_its"},
+      {"No":10,"Nama UKM":"ITS Basketball","Bidang":"Olahraga","Deskripsi":"Jika kamu menyukai olahraga bola basket, UKM basket ITS bisa menjadi pilihan kamu untuk mengembangkan skill. Tak hanya untuk kompetisi bola basket, namun juga untuk bermain dan berkomunitas dengan orang ber-passion sama dengan kamu. Lihat keseruan UKM bola basket disini","Direct Link Logo":"https://lh3.googleusercontent.com/d/1R9sokza6iRuD0pAeHgsX0yyb4_i9czH4","Link Instagram":"instagram.com/ukmbasketits"},
+      {"No":11,"Nama UKM":"IB (Biliard)","Bidang":"Olahraga","Deskripsi":"Kamu suka bermain biliard? di ITS terdapat UKM biliard yang menjadi rumah bagi kalian yang hobi dan passion sama. Ikuti serunya kegiatan UKM biliard disini.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1uPYtln2VN7iR4FX7hystAocbTVC6bAgx","Link Instagram":"instagram.com/itsbilliard"},
+      {"No":12,"Nama UKM":"Bridge","Bidang":"Olahraga","Deskripsi":"Kalau kamu gemar bermain kartu brige, maka UKM Bridge ITS bisa jadi tempat yang tepat untuk kamu. Tak sekedar bermain, UKM ini juga mengajari kamu strategi, sportifitas dan juga memacu kamu untuk berkompetisi hingga tingkat internasional. Lihat selengkapnya disini","Direct Link Logo":"https://lh3.googleusercontent.com/d/1qaIutfNrVDbTfFHpwK_5QwXI10c2oeeo","Link Instagram":"instagram.com/bridge.its"},
+      {"No":13,"Nama UKM":"Catur","Bidang":"Olahraga","Deskripsi":"Bagi kalian yang menyukai catur, ITS memiliki UKM catur yang menampung hobi kamu dalam bermain permainan papan ini. Ikuti serunya kegiatan UKM catur di ITS disini","Direct Link Logo":"https://lh3.googleusercontent.com/d/1FEL4W3Y-kB-cl0govxPtBBZpL2yW8hZe","Link Instagram":"instagram.com/ucitssepuluhnopember"},
+      {"No":14,"Nama UKM":"Flag Football","Bidang":"Olahraga","Deskripsi":"UKM yang berdiri pada tahun 2013 ini, merupakan wadah bagi mahasiswa ITS yang minat dan bakatnya di olahraga flag football. UKM Flag Football ini memiliki nama lain yaitu Seaborg, atau nama tim dari UKM Flag Football ini sendiri. UKM ini telah mengikuti banyak perlombaan dan diantaranya menjadi juara, diantaranya perlombaan nasional College Bowl dan Surabaya Flag Football League. Kegiatan UKM Flag Football sendiri ada latihan rutin, welcoming party, internalisasi.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1I6rDl1CSOqDTCFxeouJ0wFkQBrmmu6ab","Link Instagram":"instagram.com/its.flagfootball"},
+      {"No":15,"Nama UKM":"Voli (IVB)","Bidang":"Olahraga","Deskripsi":"UKM Volleyball ITS didirikan pada tahun 2016 atas rekomendasi Lembaga Minat Bakat (LMB) dari komunitas penggemar volleyball ITS. Walau baru 4 tahun, UKM Volleyball ITS sudah mampu menembus 8 besar nasional dalam kejuaraan voli antar perguruan tinggi. Kegiatan-kegiatan yang ada di UKM Volleyball ITS ini antara lain latihan rutin, sparing, POMITS, dan Pires. UKM Volleyball melakukan latihan rutinnya di Kampus Manyar.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1_9AlfpPGQGeO3ALI8P9N3TLZb0L3JnnH","Link Instagram":"instagram.com/ukmvoli.its"},
+      {"No":16,"Nama UKM":"Sepakbola","Bidang":"Olahraga","Deskripsi":"Sepakbola merupakan salah satu olahraga paling populer di dunia. Jika kamu menyukai sepak bola, UKM Sepak Bola ITS bisa menjadi pilihan kamu untuk mengembangkan skill. Tak peduli kamu ingin jadi juara lapangan hijau atau sekedar bermain, kamu akan menemukan rumah disini. Lihat keseruan UKM bola basket disini","Direct Link Logo":"https://lh3.googleusercontent.com/d/1QW1nnokzoJ2h9gIamW8dAE2aBUxNlAt2","Link Instagram":"instagram.com/ukmsepakbolaits"},
+      {"No":17,"Nama UKM":"Tenis Lapangan","Bidang":"Olahraga","Deskripsi":"Kamu suka olahraga yang menguatkan badan dan lengan? tenis bisa menjadi olahraga untuk mengembangkan hobi kamu. Disini kamu akan bertemu dengan orang dengan hobi sama hingga keluarga baru dengan ketertarikan sama. Llihat keseruan UKM ini disini","Direct Link Logo":"https://lh3.googleusercontent.com/d/1Nw8BxyKoiJPupK0TLFXTdj9RTuEOd0QN","Link Instagram":"instagram.com/tennis_its"},
+      {"No":18,"Nama UKM":"Softball","Bidang":"Olahraga","Deskripsi":"Softball merupakan olahraga beregu yang terdiri dari 2 tim dimana setiap tim akan bergantian menjadi pemukul dan penjaga. UKM Softball ITS berdiri pada tahun 2015. UKM ini memiliki nama lain yaitu Stingray, yang dimana Stringray sendiri merupakan nama tim dari softball ITS. Kegiatan UKM Softball dilakukan di Taman Alumni. Perlombaan yang pernah diikuti oleh UKM Softball adalah Liga Mahasiswa, UGM CUP, REDFOX, dan Unair Cup.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1qpTy0C0YhH6BUafSBYVAY55Wlei7QYI9","Link Instagram":"instagram.com/ukmsoftballits"},
+      {"No":19,"Nama UKM":"ITS Archery (ITSA)","Bidang":"Olahraga","Deskripsi":"ITS Archery merupakan UKM yang baru berdiri pada tahun 2019. UKM yang berslogan “membidik dengan hati ini” sebelumnya berawal dari komunitas ITS Archery. UKM ITS Archery memiliki beberapa kegiatan diantaranya latihan rutin, fun games, dan internal archery competition (INARCO). Prestasi yang pernah diraih oleh UKM ini antara lain Juara 1 Horsebow Ground Archery RH2C Competition 2020 dan Juara 3 Lomba Field Archery 2019.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1enxlQLkA4eUEBKywmxKp8bu7PcGyVAb-","Link Instagram":"instagram.com/archeryits"},
+      {"No":20,"Nama UKM":"HDE","Bidang":"Olahraga","Deskripsi":"Heroes Day E-Sports (HDE) adalah wadah pengembangan yang cocok untuk kalian yang tertarik di bidang E-Sport. Bagi kalian yang ingin bermain games sekaligus dapat banyak benefit UKM ini sangat cocok di ikuti.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1ddBn0U6bPbDfNsAFOTPWvbLPmpTOj7rM","Link Instagram":"instagram.com/its.heroesdayesports"},
+      {"No":21,"Nama UKM":"GOLF","Bidang":"Olahraga","Deskripsi":"Golf ITS adalah salah satu UKM Bidang Olahraga yang berfokus pada permainan golf. Di UKM ini kalian akan diajari gimana cara bermain yang benar.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1ROOuFk05VAlOjgFo15AnWSkMChc5v3eR","Link Instagram":"instagram.com/ukm_golfits"},
+      {"No":22,"Nama UKM":"Tenis Meja","Bidang":"Olahraga","Deskripsi":"Tenis Meja ITS adalah salah satu calon UKM yang mewadahi pengembangan mahasiswa yang berfokus pada tenis meja. Buat kalian yang suka permainan ini boleh banget join karena dijamin asik.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1lp4J-qzPwmond2_YYYpvOqNOz1O0B0Ld","Link Instagram":"instagram.com/tenismeja.its"},
+      {"No":23,"Nama UKM":"Rebana (URI)","Bidang":"Seni","Deskripsi":"UKM Rebana merupakan UKM yang melestarikan seni tradisional Hazarah Banjari . Temukan ekspresimu lewat seni musik ini dan temukan keluarga yang berbagi passion dan kecintaan denganmu.","Direct Link Logo":"https://lh3.googleusercontent.com/d/16K1rvpPLxs5VSGEevc9_SsmRpj__32lo","Link Instagram":"instagram.com/ukmrebanaits"},
+      {"No":24,"Nama UKM":"Musik","Bidang":"Seni","Deskripsi":"UKM Musik bisa jadi pilihan kamu. Tak peduli kamu suka menyanyi, atau bermain musik, kamu akan diterima disini. Tak sedikit anggota UKM Musik yang melalangbuana dalam pentas dan kompetisi. ","Direct Link Logo":"https://lh3.googleusercontent.com/d/1LmiCb31JRHg_1UG0iFhoe3_gS08TuT28","Link Instagram":"instagram.com/musikits"},
+      {"No":25,"Nama UKM":"PSM","Bidang":"Seni","Deskripsi":"Paduan Suara Mahasiswa (PSM) ITS adalah tempat terbaik bagi kamu untuk belajar. Tak hanya soal paduan suara, kamu juga akan ditempa menjadi tim yang handal hingga ke kompetisi internasional. ","Direct Link Logo":"https://lh3.googleusercontent.com/d/18pnUxdIhV0GUClk5-pmc8p8AxVzaOqbe","Link Instagram":"instagram.com/itschoir"},
+      {"No":26,"Nama UKM":"Teater Tiyang Alit","Bidang":"Seni","Deskripsi":"Bergabunglah bersama Teater Tiyang Alit dan tenggelamkan dirimu dalam lakon dan cerita bersama orang dengan passion sama. ","Direct Link Logo":"https://lh3.googleusercontent.com/d/19P_LxhoE57riQW71kAFGVW3tHKz55irM","Link Instagram":"instagram.com/teatertiyangalit"},
+      {"No":27,"Nama UKM":"UKAFO","Bidang":"Seni","Deskripsi":"UKAFO menyatukan orang dengan hobi fotografi dan menjadi wadah yang tepat untuk belajar fotografi. Kembangkan passionmu dan temukan keluarga baru disini! Pelajari lebih lanjut tentang UKAFO disini.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1QAzwf5Iv_lmg_BW37KMpkcuxi2xxkHGY","Link Instagram":"instagram.com/ukafo_its"},
+      {"No":28,"Nama UKM":"UKTK","Bidang":"Seni","Deskripsi":"Di sini kamu bisa mengembangkan minatmu dibidang tari tradisional, modern dan juga seni karawitan.","Direct Link Logo":"https://lh3.googleusercontent.com/d/123_Yd0vYgJz-xUQ24PYj2Ih0YGrUteUD","Link Instagram":"instagram.com/uktkits"},
+      {"No":29,"Nama UKM":"VSNMC","Bidang":"Seni","Deskripsi":"VSNMC atauVictory Sepuluh Nopember Marching Corps yang merupakan wadah minat bakat mahasiswa ITS dalam bidang Marching Band. Jika kamu suka bermain musik dalam grup besar, maka VSNMC adalah tempat yang tepat bagi kamu untuk berekspresi.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1yU2-6H6dlqrWisKNSwkTRIsFcBkjsVqE","Link Instagram":"instagram.com/vsnmc_its"},
+      {"No":30,"Nama UKM":"IAC","Bidang":"Khusus","Deskripsi":"Jika kamu juga takjub dengan fenomena yang menciptakan alam semesta, perilaku benda langit dan dunia tempat kita hidup, maka UKM ini adalah tempat yang cocok untuk kamu.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1PqR76fU3kVOwOBjBMaVcSxQQ3-Mt-259","Link Instagram":"instagram.com/its_astronomyclub"},
+      {"No":31,"Nama UKM":"IFLS","Bidang":"Khusus","Deskripsi":"IFLS adalah UKM yang bergerak dalam bidang Bahasa dan Budaya Asing. Terdiri dari divisi ITS Debating Society, Jepang, Korea, Dueling Cards, dan IFLS Culture.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1Wl1WuUJBsfXvb-sE1zzcGA0IOekHdcB-","Link Instagram":"instagram.com/ifls_its"},
+      {"No":32,"Nama UKM":"KOPMA","Bidang":"Khusus","Deskripsi":"UKM Kopma Dr Angka bisa menjadi tempat yang tepat bagi kamu untuk berkembang. Tak sekedar UKM, Kopma Dr Angka juga telah dipercaya dalam produksi berbagai produk ITS serta pemasarannya.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1kAL-u9quZ04cvasMu7UpS5fgREg6rAyQ","Link Instagram":"instagram.com/kopma_its"},
+      {"No":33,"Nama UKM":"KSR-PMI","Bidang":"Khusus","Deskripsi":"KSR PMI ITS merupakan Unit kegiatan yang menggembangkan kemampuan di bidang kepalangmerahan dan kesehatan. Unit ini mengembangkan kemampuan anggota melalui kegiatan-kegiatan pengabdian masyarakat seperti pekan kesehatan.","Direct Link Logo":"https://lh3.googleusercontent.com/d/18G9lvpOFrPB0azT6lN0SN_nhp3sc660V","Link Instagram":"instagram.com/ksrpmiits"},
+      {"No":34,"Nama UKM":"LPM 1.0","Bidang":"Khusus","Deskripsi":"Disini kalian akan bertemu dan berinteraksi dengan sesama mahasiswa yang hobi menuangkan pemikiran dan peristiwa di sekitarnya lewat berbagai tulisan jurnalistik.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1ZQ9QL5-Kb982RHBODA1Psa3xkH9y1N00","Link Instagram":"instagram.com/satukosong_its"},
+      {"No":35,"Nama UKM":"MC","Bidang":"Khusus","Deskripsi":"ITS memiliki UKM bagi kalian yang mencintai dan ingin mempelajari budaya maritim Indonesia. Tidak hanya belajar mengenai transportasi maritim, kalian juga bisa mengolah fisik dengan menjadi tim dayung MC yang sudah menyebrang laut hingga ke Eropa.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1IzJp_ZGEOO__Gx-z6JTS-7t2xwRmm-ao","Link Instagram":"instagram.com/maritime.challenge"},
+      {"No":36,"Nama UKM":"Penalaran","Bidang":"Khusus","Deskripsi":"UKM penalaran adalah tempat bagi kalian yang suka berpikir dan berjiwa kritis. Ini juga rumah bagi kalian yang selalu haus pada ilmu pengetahuan.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1diC5bvOKhHTgpYRzxLEaHfM_e0TBs3Kx","Link Instagram":"instagram.com/penalaranits"},
+      {"No":37,"Nama UKM":"Menwa","Bidang":"Khusus","Deskripsi":"Resimen Mahasiswa (MENWA) 802-ITS merupakan wadah penyaluran potensi mahasiswa dalam rangka mewujudkan hak dan kewajiban warga negara dalam bela negara. Melalui Menwa, mahasiswa dilatih untuk lebih disiplin, berpengetahuan luas, berfisik kuat, dan bermental baja.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1ca0RbwVmKKwSc-XCInNpLd47C680qWHr","Link Instagram":"instagram.com/menwaits"},
+      {"No":38,"Nama UKM":"Pramuka","Bidang":"Khusus","Deskripsi":"UKM Pramuka ITS merupakan pangkalan dari gugus depan Surabaya 610 dan Surabaya 611. Pramuka ITS terus berusaha mengubah mindset masyarakat tentang pramuka pada umumnya menjadi pramuka dengan wawasan teknologi. Hal itu selaras dengan Kampus Teknologi ``Institut Teknologi Sepuluh Nopember``.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1o4Qs9s3LCWZPv2hgLoYQ5Ub5wiVKKOuN","Link Instagram":"instagram.com/pramuka.its"},
+      {"No":39,"Nama UKM":"Robotik","Bidang":"Khusus","Deskripsi":"Robotika merupakan salah satu gengsi perguruan tinggi teknik. Dan Robotika ITS sudah punya reputasi mentereng di tingkat nasional sampai internasional. Disini kalian akan belajar mengenai seluk beluk robot mulai dari robot humanoid, pemadam api hingga penari.","Direct Link Logo":"https://lh3.googleusercontent.com/d/1JHjYHhhY8ikqXSdel0CbmCCK9Fho9qEZ","Link Instagram":"instagram.com/its.robotics"},
+      {"No":40,"Nama UKM":"PLH Siklus","Bidang":"Khusus","Deskripsi":"UKM yang memiliki ranah sosial dan lingkungan serta berfokus pada konservasi Lingkungan. Selain itu terdapat 4 (empat) olahraga pengiring kegiatan PLH SIKLUS ITS yaitu Rock Climbing, Rafting, Caving, dan Mountaineering.","Direct Link Logo":"https://lh3.googleusercontent.com/d/19HfJHqd5gLoX-zJD05d8Ez0DWXOm4CwI","Link Instagram":"instagram.com/plhsiklusits"},
+      {"No":41,"Nama UKM":"TDC","Bidang":"Khusus","Deskripsi":"Technopreneurship Development Center merupakan UKM yang tepat bagi kalian yang passionate dalam bidang wirausaha dan ingin membuat usaha secara mandiri. Di bawah bimbingan pengajar di ITS, anggota UKM TDC akan berkumpul bersama sesama pengusaha untuk menggodok dan mengembangkan usahanya. ","Direct Link Logo":"https://lh3.googleusercontent.com/d/17aA24klanj5Q8wVjHpJoPB5wG9u3FTjK","Link Instagram":"instagram.com/tdcits"},
+      {"No":42,"Nama UKM":"MUN","Bidang":"Khusus","Deskripsi":"ITS MUN Club merupakan tempat paling tepat bagi kamu untuk berkembang. Di bawah IFLS, ITS MUN Club mewadahi skill kamu dalam simulasi sidang Persatuan Bangsa-Bangsa (PBB).","Direct Link Logo":"https://lh3.googleusercontent.com/d/1lskb0vgi7rzXE6ogmhac76LqH5Lyzdrq","Link Instagram":"instagram.com/itsmunclub"},
+      {"No":43,"Nama UKM":"UKM Automotif","Bidang":"Khusus","Deskripsi":"UKM Otomotif ITS merupakan salah satu calon UKM yang menaungi 5 tim riset mobil, yaitu Anargya ITS EV Team, Antasena ITS Team, Nogogeni ITS Team, ITS Team Sapuangin, dan Spektronics ITS Chem-E Car Team. UKM Otomotif ITS dibentuk atas dasar penanaman kepedulian dan kesadaran terhadap isu perubahan iklim dan penghematan energi","Direct Link Logo":"https://lh3.googleusercontent.com/d/1OQ5SjDQ_rL5yUPkRqLai29t57FpM6_Q0","Link Instagram":"instagram.com/automotiveteam.its"},
+      {"No":44,"Nama UKM":"ITS Quran Society","Bidang":"Khusus","Deskripsi":"ITS Society For Quranic Studies adalah salah satu calon UKM yang berfokus pada pengembangan seni qur'ani yang diperlombakan di Musabaqoh Tilawatil Qur'an Mahasiswa Nasional (MTQMN)","Direct Link Logo":"https://lh3.googleusercontent.com/d/1Kmp5Jyb1tlDlocnMGSY8ciVBiicnwg7k","Link Instagram":"instagram.com/iqs.its"}
+    ];
+
+    function renderUKMCards(filterCat = 'all', search = '') {
+      const container = document.getElementById('ukmCards');
+      let data = UKM_DATA;
+      if(filterCat && filterCat !== 'all') data = data.filter(u => u.Bidang === filterCat);
+      if(search) {
+        const s = search.toLowerCase();
+        data = data.filter(u =>
+          u["Nama UKM"].toLowerCase().includes(s) ||
+          u["Bidang"].toLowerCase().includes(s) ||
+          u["Deskripsi"].toLowerCase().includes(s)
+        );
+      }
+      container.innerHTML = data.length === 0 ? "<div style='color:#a7556a;font-size:1.16rem;margin-top:30px;'>Tidak ditemukan UKM yang sesuai.</div>" : data.map(ukm => `
+        <div class="ukm-card">
+          <img class="ukm-logo" src="${ukm["Direct Link Logo"]}" alt="${ukm["Nama UKM"]}"/>
+          <div class="ukm-title">${ukm["Nama UKM"]}</div>
+          <div class="ukm-bidang">${ukm["Bidang"]}</div>
+          <div class="ukm-desc">${ukm["Deskripsi"].replace(/(.{110})..+/, "$1...")}</div>
+          <button class="ukm-detail-btn" onclick='showUKMModal(${JSON.stringify(ukm)})'>Lihat Detail</button>
+          <div class="ukm-card-footer">
+            <div class="ukm-instagram">
+              <img src="https://img.icons8.com/ios-filled/18/a7556a/instagram-new.png" style="vertical-align:middle;"/>
+              <span>@${ukm["Link Instagram"].replace(/^.*com\//,'')}</span>
+            </div>
+            <div class="ukm-status">Aktif Rekrut</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.onclick = function(){
+        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+        let cbtn = document.querySelector(`.cat-btn[data-cat="${btn.dataset.filter}"]`);
+        if(cbtn) cbtn.classList.add('active');
+        renderUKMCards(btn.dataset.filter, document.getElementById('searchInput').value);
+      }
+    });
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.onclick = function(){
+        document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+        let fbtn = document.querySelector(`.filter-btn[data-filter="${btn.dataset.cat}"]`);
+        if(fbtn) fbtn.classList.add('active');
+        renderUKMCards(btn.dataset.cat, document.getElementById('searchInput').value);
+      }
+    });
+    document.getElementById('searchInput').addEventListener('input', function(){
+      const cat = document.querySelector('.cat-btn.active').dataset.cat;
+      renderUKMCards(cat, this.value);
+    });
+    function showUKMModal(ukm) {
+      const modalRoot = document.getElementById('modal-root');
+      let ig = ukm['Link Instagram'] || '';
+      if (ig && !/^https?:\/\//.test(ig)) ig = 'https://' + ig;
+      modalRoot.innerHTML = `
+        <div class="modal-bg" tabindex="0" onclick="closeUKMModal(event)">
+          <div class="modal" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeUKMModal(event)">&times;</button>
+            <img src="${ukm['Direct Link Logo']}" alt="${ukm['Nama UKM']}"/>
+            <h3>${ukm['Nama UKM']}</h3>
+            <div class="ukm-bidang">${ukm.Bidang}</div>
+            <div class="ukm-deskripsi">${ukm.Deskripsi}</div>
+            <div class="ukm-instagram">
+              <a href="${ig}" target="_blank" rel="noopener">
+                <img src="https://img.icons8.com/ios-filled/18/ffffff/instagram-new.png" style="vertical-align:middle;"/>
+                <span>@${ukm["Link Instagram"].replace(/^.*com\//,'')}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+      document.querySelector(".modal-bg").focus();
+    }
+    function closeUKMModal(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('modal-root').innerHTML = '';
+    }
+    document.addEventListener('keydown', function(evt){
+      if(evt.key==="Escape") closeUKMModal();
+    });
+    renderUKMCards();
+  </script>
+</body>
+</html>
