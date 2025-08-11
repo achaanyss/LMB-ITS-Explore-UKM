@@ -521,7 +521,7 @@
           <div class="ukm-title">${ukm["Nama UKM"]}</div>
           <div class="ukm-bidang">${ukm["Bidang"]}</div>
           <div class="ukm-desc">${ukm["Deskripsi"].replace(/(.{110})..+/, "$1...")}</div>
-          <button class="ukm-detail-btn" onclick='showUKMModal(${JSON.stringify(ukm)})'>Lihat Detail</button>
+          <button class="ukm-detail-btn" data-ukm-index="${i}">Lihat Detail</button>
           <div class="ukm-card-footer">
             <div class="ukm-instagram">
               <img src="https://img.icons8.com/ios-filled/18/a7556a/instagram-new.png" style="vertical-align:middle;"/>
