@@ -504,34 +504,43 @@
     ];
 
     function renderUKMCards(filterCat = 'all', search = '') {
-      const container = document.getElementById('ukmCards');
-      let data = UKM_DATA;
-      if(filterCat && filterCat !== 'all') data = data.filter(u => u.Bidang === filterCat);
-      if(search) {
-        const s = search.toLowerCase();
-        data = data.filter(u =>
-          u["Nama UKM"].toLowerCase().includes(s) ||
-          u["Bidang"].toLowerCase().includes(s) ||
-          u["Deskripsi"].toLowerCase().includes(s)
-        );
-      }
-      container.innerHTML = data.length === 0 ? "<div style='color:#a7556a;font-size:1.16rem;margin-top:30px;'>Tidak ditemukan UKM yang sesuai.</div>" : data.map(ukm => `
-        <div class="ukm-card">
-          <img class="ukm-logo" src="${ukm["Direct Link Logo"]}" alt="${ukm["Nama UKM"]}"/>
-          <div class="ukm-title">${ukm["Nama UKM"]}</div>
-          <div class="ukm-bidang">${ukm["Bidang"]}</div>
-          <div class="ukm-desc">${ukm["Deskripsi"].replace(/(.{110})..+/, "$1...")}</div>
-          <button class="ukm-detail-btn" onclick='showUKMModal(${JSON.stringify(ukm)})'>Lihat Detail</button>
-          <div class="ukm-card-footer">
-            <div class="ukm-instagram">
-              <img src="https://img.icons8.com/ios-filled/18/a7556a/instagram-new.png" style="vertical-align:middle;"/>
-              <span>@${ukm["Link Instagram"].replace(/^.*com\//,'')}</span>
-            </div>
-            <div class="ukm-status">Aktif Rekrut</div>
+  const container = document.getElementById('ukmCards');
+  let data = UKM_DATA;
+  if(filterCat && filterCat !== 'all') data = data.filter(u => u.Bidang === filterCat);
+  if(search) {
+    const s = search.toLowerCase();
+    data = data.filter(u =>
+      u["Nama UKM"].toLowerCase().includes(s) ||
+      u["Bidang"].toLowerCase().includes(s) ||
+      u["Deskripsi"].toLowerCase().includes(s)
+    );
+  }
+  container.innerHTML = data.length === 0 ?
+    "<div style='color:#a7556a;font-size:1.16rem;margin-top:30px;'>Tidak ditemukan UKM yang sesuai.</div>" :
+    data.map((ukm, i) => `
+      <div class="ukm-card">
+        <img class="ukm-logo" src="${ukm["Direct Link Logo"]}" alt="${ukm["Nama UKM"]}"/>
+        <div class="ukm-title">${ukm["Nama UKM"]}</div>
+        <div class="ukm-bidang">${ukm["Bidang"]}</div>
+        <div class="ukm-desc">${ukm["Deskripsi"].replace(/(.{110})..+/, "$1...")}</div>
+        <button class="ukm-detail-btn" data-ukm-index="${i}">Lihat Detail</button>
+        <div class="ukm-card-footer">
+          <div class="ukm-instagram">
+            <img src="https://img.icons8.com/ios-filled/18/a7556a/instagram-new.png" style="vertical-align:middle;"/>
+            <span>@${ukm["Link Instagram"].replace(/^.*com\//,'')}</span>
           </div>
+          <div class="ukm-status">Aktif Rekrut</div>
         </div>
-      `).join('');
-    }
+      </div>
+    `).join('');
+  // Add event listener
+  document.querySelectorAll('.ukm-detail-btn').forEach(btn => {
+    btn.onclick = function() {
+      const idx = this.getAttribute('data-ukm-index');
+      showUKMModal(data[idx]);
+    };
+  });
+}
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.onclick = function(){
         document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
